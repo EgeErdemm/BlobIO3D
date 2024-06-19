@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+
 
 public class Player : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class Player : MonoBehaviour
     [SerializeField] private BlobFactory blobFactory;
 
     public int Level => level;
+    private Tween FovTween;
+    private float initialFov =20f;
 
     
     #region LifeCycle
@@ -65,14 +69,20 @@ public class Player : MonoBehaviour
     private void IncreaseLevel(int level)
     {
         SetLevel(this.level +level);
-        Camera.main.fieldOfView += level;
+        //Camera.main.fieldOfView += level;
+        initialFov += level;
+        float duration = 1f;
+        FovTween?.Kill();
+        FovTween = Camera.main.DOFieldOfView(initialFov, duration);
     }
     
     private void ColletBlob(Blob blob)
     {
         IncreaseLevel(blob.Level);
-        Destroy(blob.gameObject);
-        blobFactory.BlobListClear(blob);
+        //Destroy(blob.gameObject);
+        //blobFactory.BlobListClear(blob);
+        //yenilen yem farklı konumda spawnlansın
+        blob.transform.position = blobFactory.RandomCoordinate();
     }
     
 }

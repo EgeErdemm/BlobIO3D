@@ -6,8 +6,12 @@ public class BlobFactory : MonoBehaviour
     [SerializeField] private Blob blobPrefab;
     [SerializeField] private Transform blobParent;
     [SerializeField] private List<Blob> blobList = new List<Blob>();
-    //
     [SerializeField] private Transform border;
+
+
+
+
+
 
     public Blob Create(int level/*,Vector3 position = default*/)
     {

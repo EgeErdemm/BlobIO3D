@@ -2,6 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
 public class CameraFollower : MonoBehaviour
 {
     [SerializeField] private Transform mTarget;
