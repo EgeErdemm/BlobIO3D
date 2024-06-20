@@ -6,7 +6,11 @@ using DG.Tweening;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float speed = 5f;
+    private static Player _Instance;
+    public static Player Instance => _Instance;
+
+
+    [SerializeField] private float speed = 3f;
     //Scale Part
     [SerializeField] private Transform _pivot;
     [SerializeField] private SphereCollider _sphereCollider;
@@ -20,8 +24,17 @@ public class Player : MonoBehaviour
     private Tween FovTween;
     private float initialFov =20f;
 
-    
+    private GameManager _GameManager;
+
+
     #region LifeCycle
+
+    private void Awake()
+    {
+        _GameManager = GameManager.Instance;
+        _Instance = this;
+        SetLevel(level);
+    }
 
     private void Update()
     {
@@ -64,6 +77,7 @@ public class Player : MonoBehaviour
     {
         this.level = level;
         SetScale(level);
+        //speed = _GameManager.SetSpeed(level);
     }
 
     private void IncreaseLevel(int level)

@@ -3,13 +3,21 @@ using UnityEngine;
 
 public class BlobFactory : MonoBehaviour
 {
+    private static BlobFactory _Instance;
+    public static BlobFactory Instance => _Instance;
+
+
     [SerializeField] private Blob blobPrefab;
     [SerializeField] private Transform blobParent;
     [SerializeField] private List<Blob> blobList = new List<Blob>();
     [SerializeField] private Transform border;
+    [SerializeField] private Enemy enemyPrefab;
 
 
-
+    private void Awake()
+    {
+        _Instance = this;
+    }
 
 
 
@@ -34,9 +42,16 @@ public class BlobFactory : MonoBehaviour
         z = Random.Range(border.GetChild(3).transform.position.z, border.GetChild(0).transform.position.z);
         y = 0f;
         Vector3 blobposition = new Vector3(x, y, z);
-        Debug.Log("blob position"+blobposition);
+       // Debug.Log("blob position"+blobposition);
         return blobposition;
     }
-    
+
+    public Enemy CreateEnemy(int level)
+    {
+        Vector3 position = RandomCoordinate();
+        Enemy enemy = Instantiate(enemyPrefab, position, Quaternion.identity);
+        enemy.SetLevel(level);
+        return enemy;
+    }
     
 }

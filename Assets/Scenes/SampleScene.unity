@@ -284,6 +284,7 @@ MonoBehaviour:
   blobParent: {fileID: 245493301}
   blobList: []
   border: {fileID: 412838213}
+  enemyPrefab: {fileID: 5530653480556636496, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
 --- !u!4 &1153685200
 Transform:
   m_ObjectHideFlags: 0
@@ -506,7 +507,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blobFactory: {fileID: 1153685199}
-  timer: 5
+  StartingCountOfBlob: 200
+  StartingCountOfEnemy: 10
+  CheckRadius: 5
+  speedDecreaser: 0.01
+  border: {fileID: 412838213}
 --- !u!1 &1551322515
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,7 +598,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 10
-  field of view: 40
+  field of view: 58
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -652,6 +657,10 @@ PrefabInstance:
     - target: {fileID: 7631867195836181900, guid: 06bdbe6eac2474013857d12d66c2c3de, type: 3}
       propertyPath: m_Name
       value: Blob
+      objectReference: {fileID: 0}
+    - target: {fileID: 7631867195836181900, guid: 06bdbe6eac2474013857d12d66c2c3de, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7631867195836181903, guid: 06bdbe6eac2474013857d12d66c2c3de, type: 3}
       propertyPath: m_RootOrder
@@ -850,6 +859,67 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!1001 &5530653480173587713
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -20.000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -8.881784e-17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636494, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636495, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_Name
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5530653480556636495, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9893ac94faf0841e89b80acb2bf78540, type: 3}
 --- !u!1001 &5865073251461529142
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -857,6 +927,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5865073252058119108, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
+      propertyPath: level
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5865073252058119108, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
+      propertyPath: speed
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119108, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: blobFactory
       value: 
@@ -867,7 +945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119109, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 99
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119109, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -875,7 +953,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119109, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -4.53
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119109, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -908,6 +986,10 @@ PrefabInstance:
     - target: {fileID: 5865073252058119110, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5865073252058119110, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
