@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         DoSomethink();
-        _GameManager.CheckWordLimit(gameObject.transform);
+        _GameManager?.CheckWordLimit(gameObject.transform);
     }
 
 
@@ -207,7 +207,7 @@ public class Enemy : MonoBehaviour
 
         if (other.TryGetComponent(out Enemy enemy))
         {
-            // level kontrolü yapılmalı kim kimi yemeli?
+
             
            bool thisBig = _GameManager.IsBigger(this._Level, enemy._Level);
             if (thisBig)

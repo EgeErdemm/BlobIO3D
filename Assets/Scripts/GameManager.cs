@@ -12,20 +12,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float CheckRadius = 5f;
     [SerializeField] private float speedDecreaser = 0.01f;
 
+    [SerializeField] private GameOverScreen _gameOverScreen;
+
     public float checkRadius => CheckRadius;
 
     [SerializeField] private Transform border;
-    private float y, maxX, maxZ, minX, minZ;
+    private float maxX, maxZ, minX, minZ;
 
     //For gameOver
     private bool GameFinished = false;
     public bool isGameFinished => GameFinished;
 
-    public void SetGameFinished(bool value)
-    {
-        GameFinished = value;
-    }
 
+    private void Update()
+    {
+
+    }
 
     private void Awake()
     {
@@ -45,7 +47,6 @@ public class GameManager : MonoBehaviour
         maxZ = border.GetChild(0).transform.position.z; //25
         minX = -border.GetChild(0).transform.position.x; //-25
         minZ = -border.GetChild(0).transform.position.z; //-25
-        y = 0f;
 
 
     }
@@ -85,10 +86,16 @@ public class GameManager : MonoBehaviour
             position.z = Mathf.Clamp(position.z, minZ, maxZ);
         }
 
-
-
-
         player.position = position;
+    }
+
+    public void SetGameFinished(bool value)
+    {
+        GameFinished = value;
+        if (GameFinished)
+        {
+            _gameOverScreen.GameOver();
+        }
     }
 
 

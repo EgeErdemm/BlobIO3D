@@ -933,7 +933,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119108, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: speed
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119108, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: blobFactory
@@ -945,7 +945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119109, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 99
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5865073252058119109, guid: 50dd0a56115914c979f20857b5b12da1, type: 3}
       propertyPath: m_LocalPosition.y

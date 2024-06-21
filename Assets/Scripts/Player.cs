@@ -18,26 +18,38 @@ public class Player : MonoBehaviour
     [SerializeField] private float StartRadius = 0.15f;
     private const float RadiusPerLevel = 0.01f;
     //
-    [SerializeField] private BlobFactory blobFactory;
+    //[SerializeField] private BlobFactory _blobFactory;
 
     public int Level => level;
     private Tween FovTween;
     private float initialFov =20f;
 
     private GameManager _GameManager;
-
+    private BlobFactory _blobFactory;
 
     #region LifeCycle
 
     private void Awake()
     {
-        _GameManager = GameManager.Instance;
+
         _Instance = this;
+
+    }
+
+
+    private void Start()
+    {
+        _blobFactory = BlobFactory.Instance;
+        _GameManager = GameManager.Instance;
         SetLevel(level);
     }
 
     private void Update()
     {
+        if (_GameManager == null)
+            Debug.Log("gamemanager null");
+        if (_blobFactory == null)
+            Debug.Log("blob factory null");
         Vector3 mousePosition = Input.mousePosition;
         
         Vector3 normalizedTargetPosition = new Vector3(
@@ -51,12 +63,28 @@ public class Player : MonoBehaviour
         transform.position += normalizedTargetPosition * (Time.deltaTime * speed);
         // Scale
         SetScale(level);
+        _GameManager?.CheckWordLimit(gameObject.transform);
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
        if( other.TryGetComponent(out Blob blob) )
            ColletBlob(blob);
+
+
+        if (other.TryGetComponent(out Enemy enemy))
+        {
+
+
+            bool thisBig = _GameManager.IsBigger(level, enemy._Level);
+            if (thisBig)
+            {
+                ColletEnemy(enemy);
+
+            }
+        }
+
     }
     
 
@@ -96,7 +124,15 @@ public class Player : MonoBehaviour
         //Destroy(blob.gameObject);
         //blobFactory.BlobListClear(blob);
         //yenilen yem farklı konumda spawnlansın
-        blob.transform.position = blobFactory.RandomCoordinate();
+        blob.transform.position = _blobFactory.RandomCoordinate();
     }
-    
+
+    private void ColletEnemy(Enemy enemy)
+    {
+        IncreaseLevel(enemy._Level);
+        enemy.transform.position = _blobFactory.RandomCoordinate();
+        enemy.SetLevel(2);
+    }
+
+
 }
