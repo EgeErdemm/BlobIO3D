@@ -12,6 +12,7 @@ public class BlobFactory : MonoBehaviour
     [SerializeField] private List<Blob> blobList = new List<Blob>();
     [SerializeField] private Transform border;
     [SerializeField] private Enemy enemyPrefab;
+    [SerializeField] private Poisoned poisonedPrefab;
 
 
     private void Awake()
@@ -53,5 +54,13 @@ public class BlobFactory : MonoBehaviour
         enemy.SetLevel(level);
         return enemy;
     }
-    
+
+    public Poisoned CreatePoisoned()
+    {
+        Vector3 position = RandomCoordinate();
+        Poisoned poisoned = Instantiate(poisonedPrefab, position, Quaternion.identity);
+        return poisoned;
+    }
+
+
 }

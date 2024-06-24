@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
    [SerializeField] private BlobFactory blobFactory;
    [SerializeField] private int StartingCountOfBlob = 500;
     [SerializeField] private int StartingCountOfEnemy= 10;
+    [SerializeField] private int StartingCountOfPoisoned = 30;
     [SerializeField] private float CheckRadius = 5f;
     [SerializeField] private float speedDecreaser = 0.01f;
 
@@ -23,10 +24,9 @@ public class GameManager : MonoBehaviour
     private bool GameFinished = false;
     public bool isGameFinished => GameFinished;
 
-
-    private void Update()
+    private void Start()
     {
-
+  
     }
 
     private void Awake()
@@ -34,13 +34,19 @@ public class GameManager : MonoBehaviour
         _Instance = this;
         for(int i=0; i<StartingCountOfBlob; i++)
         {
-            blobFactory.Create(1);
-        }
-        for (int j = 0; j < StartingCountOfEnemy; j++){
-            blobFactory.CreateEnemy(2);
+            Blob blob = blobFactory.Create(1);
+            SetRandomMaterialOfBlob(blob);
         }
 
-
+        for (int j = 0; j < StartingCountOfEnemy; j++)
+        {
+            Enemy enemy = blobFactory.CreateEnemy(2);
+            SetRandomMaterial(enemy);
+        }
+        for (int k = 0; k < StartingCountOfPoisoned; k++)
+        {
+            Poisoned poisoned = blobFactory.CreatePoisoned();
+        }
 
 
         maxX = border.GetChild(0).transform.position.x; //25
@@ -67,9 +73,9 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public float SetSpeed(float speed)
+    public float SetSpeed(float speed /* level de gelmeli */)
     {
-        speed -= speedDecreaser;
+        speed -= speedDecreaser /* *level */;
         return speed;
     }
 
@@ -98,6 +104,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // farklı renklerde enemy yap
 
+    public Renderer SetRandomMaterial(Enemy enemy)
+    {
+        var _renderer = enemy.GetComponentInChildren<Renderer>();
+        Color randomColor = new Color(Random.value, Random.value, Random.value, 1.0f);
+        _renderer.material.SetColor("_BaseColor", randomColor);
+        Debug.Log("set color");
+        return _renderer;
+    }
+
+    public Renderer SetRandomMaterialOfBlob(Blob blob)
+    {
+        var _renderer = blob.GetComponentInChildren<Renderer>();
+        Color randomColor = new Color(Random.value, Random.value, Random.value, 1.0f);
+        _renderer.material.SetColor("_BaseColor", randomColor);
+        Debug.Log("set color");
+        return _renderer;
+    }
 
 }

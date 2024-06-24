@@ -246,11 +246,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ae989d5a19884594944488d4c066f9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 3
   _pivot: {fileID: 5865073251799408513}
   _sphereCollider: {fileID: 5865073252058119111}
-  level: 1
-  StartRadius: 0.5
+  level: 5
+  StartRadius: 0.15
 --- !u!135 &5865073252058119111
 SphereCollider:
   m_ObjectHideFlags: 0

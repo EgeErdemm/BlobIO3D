@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]private float speed = 3f;
     [SerializeField]private int level = 10;
     public int _Level => level;
+    public float _initialSpeed => speed;
 
     private float durationOfLookAt = 0.3f;
     //[SerializeField] private float durationOfMove = 2f;
@@ -25,9 +26,13 @@ public class Enemy : MonoBehaviour
     float closestDistance = Mathf.Infinity;
     float closestEnemyDistance = Mathf.Infinity;
 
+    private Transform _transform;
+    private Tween _DoLookTween;
+
 
     private void Start()
     {
+        _transform = transform;
         _Player = Player.Instance;
         _GameManager = GameManager.Instance;
         _blobFactory = BlobFactory.Instance;
@@ -38,7 +43,7 @@ public class Enemy : MonoBehaviour
     {
         if (_GameManager == null) return;
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _GameManager.checkRadius);
+        Gizmos.DrawWireSphere(_transform.position, _GameManager.checkRadius);
     }
 
 
@@ -46,11 +51,12 @@ public class Enemy : MonoBehaviour
     {
         DoSomethink();
         _GameManager?.CheckWordLimit(gameObject.transform);
+
     }
 
 
 
-   private void DoSomethink()
+    private void DoSomethink()
     {
         bool PlayerInRange = IsPlayerInRange();
 
@@ -77,7 +83,7 @@ public class Enemy : MonoBehaviour
     private void FindFeed()
     {
         //Debug.Log("find feed");
-        Collider[] colliders = Physics.OverlapSphere(transform.position, _GameManager.checkRadius);
+        Collider[] colliders = Physics.OverlapSphere(_transform.position, _GameManager.checkRadius);
 
         foreach(Collider c in colliders)
         {
@@ -89,7 +95,7 @@ public class Enemy : MonoBehaviour
 
             if (c.TryGetComponent(out Blob blob))
             {
-                float distance = Vector3.Distance(transform.position, blob.transform.position);
+                float distance = Vector3.Distance(_transform.position, blob.transform.position);
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
@@ -101,7 +107,7 @@ public class Enemy : MonoBehaviour
             //
             if (c.TryGetComponent(out Enemy enemy))
             {
-                float EnemyDistance = Vector3.Distance(transform.position, enemy.transform.position);
+                float EnemyDistance = Vector3.Distance(_transform.position, enemy.transform.position);
                 if (EnemyDistance < closestEnemyDistance && level > enemy._Level)
                 {
                     closestEnemyDistance = EnemyDistance;
@@ -124,17 +130,27 @@ public class Enemy : MonoBehaviour
         }
         else if (closestBlob !=null && closestEnemy == null)
         {
-            transform.DOLookAt(closestBlob.transform.position, durationOfLookAt);
+            if (_DoLookTween != null)
+            {
+                _DoLookTween.Kill();
+            }
+
+            _DoLookTween = transform.DOLookAt(closestBlob.transform.position, durationOfLookAt);
             Vector3 direction = closestBlob.transform.position - transform.position;
-            transform.position += direction.normalized * Time.deltaTime * speed;
+            _transform.position += direction.normalized * Time.deltaTime * speed;
             Debug.Log("go blob");
 
         }
         else if(closestEnemy != null)
         {
-            transform.DOLookAt(closestEnemy.transform.position, durationOfLookAt);
+            if (_DoLookTween != null)
+            {
+                _DoLookTween.Kill();
+            }
+
+            _DoLookTween = _transform.DOLookAt(closestEnemy.transform.position, durationOfLookAt);
             Vector3 direction = closestEnemy.transform.position - transform.position;
-            transform.position += direction.normalized * Time.deltaTime * speed;
+            _transform.position += direction.normalized * Time.deltaTime * speed;
         }
         //Debug.Log("closestBlob: " + (closestBlob != null ? closestBlob.name : "null"));
         //Debug.Log("closestEnemy: " + (closestEnemy != null ? closestEnemy.name : "null"));
@@ -143,24 +159,38 @@ public class Enemy : MonoBehaviour
 
     private void Run(Transform player)
     {
-        Vector3 direction = transform.position - player.position;
-        transform.DOLookAt(transform.position + direction, durationOfLookAt);
+
+        if (_DoLookTween != null)
+        {
+            _DoLookTween.Kill();
+        }
+
+        Vector3 direction = _transform.position - player.position;
+        _DoLookTween = transform.DOLookAt(_transform.position + direction, durationOfLookAt);
         //transform.DOMove(direction, durationOfMove);
-        transform.position += direction.normalized * Time.deltaTime * speed;
+        _transform.position += direction.normalized * Time.deltaTime * speed;
         //Debug.Log("Run boy run");
     }
 
     private void CatchPlayer()
     {
-        Vector3 direction = _Player.transform.position - transform.position;
-        transform.DOLookAt(_Player.transform.position, durationOfLookAt);
-        transform.position += direction.normalized * Time.deltaTime *speed;
+
+
+        if(_DoLookTween != null)
+        {
+            _DoLookTween.Kill();
+        }
+
+
+        Vector3 direction = _Player.transform.position - _transform.position;
+        _DoLookTween = _transform.DOLookAt(_Player.transform.position, durationOfLookAt);
+        _transform.position += direction.normalized * Time.deltaTime *speed;
         //transform.DOMove(_Player.transform.position, durationOfMove);
 
-        //ontrigger enter collect player
-
+        
 
     }
+
 
 
 
@@ -171,7 +201,7 @@ public class Enemy : MonoBehaviour
 
     private bool IsPlayerInRange()
     {
-        return Vector3.Distance(transform.position, _Player.transform.position)<_GameManager.checkRadius;
+        return Vector3.Distance(_transform.position, _Player.transform.position)<_GameManager.checkRadius;
     }
 
     private bool IsMyLevelBigger()
@@ -217,9 +247,16 @@ public class Enemy : MonoBehaviour
                 closestEnemyDistance = Mathf.Infinity;
                 //Destroy(enemy);
             }
-
-
         }
+
+        if(other.TryGetComponent(out Poisoned poisoned))
+        {
+            poisoned.transform.position = _blobFactory.RandomCoordinate();
+            _transform.position = _blobFactory.RandomCoordinate();
+            level = 2;
+            SetLevel(level);
+        }
+
 
     }
 
@@ -228,6 +265,7 @@ public class Enemy : MonoBehaviour
         IncreaseLevel(enemy.level);
         enemy.transform.position = _blobFactory.RandomCoordinate();
         enemy.level = 2;
+        enemy.SetLevel(enemy._Level);
     }
 
     private void ColletBlob(Blob blob)

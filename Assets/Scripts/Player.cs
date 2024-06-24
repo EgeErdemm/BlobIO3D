@@ -17,12 +17,15 @@ public class Player : MonoBehaviour
     [SerializeField] private int level = 1;
     [SerializeField] private float StartRadius = 0.15f;
     private const float RadiusPerLevel = 0.01f;
+    private Transform _transform;
     //
     //[SerializeField] private BlobFactory _blobFactory;
 
     public int Level => level;
     private Tween FovTween;
     private float initialFov =20f;
+    private float currentFov = 0;
+    private float maxFov = 50f;
 
     private GameManager _GameManager;
     private BlobFactory _blobFactory;
@@ -39,6 +42,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        _transform = transform;
         _blobFactory = BlobFactory.Instance;
         _GameManager = GameManager.Instance;
         SetLevel(level);
@@ -58,9 +62,9 @@ public class Player : MonoBehaviour
             (mousePosition.y / Screen.height) * 2 - 1  
         );
         //Movement
-        Vector3 targetPosition = transform.position + normalizedTargetPosition;
-        transform.LookAt(targetPosition);
-        transform.position += normalizedTargetPosition * (Time.deltaTime * speed);
+        Vector3 targetPosition = _transform.position + normalizedTargetPosition;
+        _transform.LookAt(targetPosition);
+        _transform.position += normalizedTargetPosition * (Time.deltaTime * speed);
         // Scale
         SetScale(level);
         _GameManager?.CheckWordLimit(gameObject.transform);
@@ -83,6 +87,12 @@ public class Player : MonoBehaviour
                 ColletEnemy(enemy);
 
             }
+        }
+
+        if (other.TryGetComponent(out Poisoned poisoned))
+        {
+            _GameManager.SetGameFinished(true);
+            poisoned.transform.position = _blobFactory.RandomCoordinate();
         }
 
     }
@@ -112,10 +122,11 @@ public class Player : MonoBehaviour
     {
         SetLevel(this.level +level);
         //Camera.main.fieldOfView += level;
-        initialFov += level;
+        currentFov = initialFov + this.level;
+        currentFov = Mathf.Clamp(currentFov, initialFov, maxFov);
         float duration = 1f;
         FovTween?.Kill();
-        FovTween = Camera.main.DOFieldOfView(initialFov, duration);
+        FovTween = Camera.main.DOFieldOfView(currentFov, duration);
     }
     
     private void ColletBlob(Blob blob)
